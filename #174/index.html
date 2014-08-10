@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas width="100" height="100"></canvas>
+	<script type="text/javascript">
+		var res = 20; //Calculated pixed per actual pixels
+		var pixels; //Pixels to be calculated
+
+		var canvas = document.querySelector('canvas');
+		var ctx = canvas.getContext('2d');
+		var width = canvas.width / res;
+		var halfWidth = width / 2;
+		var height = canvas.height / res;
+		pixels = new Array(width * height);
+
+		//http://www.colourlovers.com/palette/3448317/alleyways
+		var palette = [
+			'#F73E2D',
+			'#BA4E34',
+			'#475254',
+			'#3F5565',
+			'#3A5C72',
+			'#fff',
+			'#408E2F'
+			// '#',
+		];
+
+		function hash(string) {
+			var hash = 0, i, chr, len;
+			if (string.length == 0) return hash;
+			for (i = 0, len = string.length; i < len; i++) {
+				chr   = string.charCodeAt(i);
+				hash += chr / string.length;
+				// hash  = ((hash << 5) - hash) + chr;
+				// hash |= 0; // Convert to 32bit integer
+			}
+			return hash;
+		}
+
+		function generatePixel(hash, i) {
+			return palette[Math.floor(Math.abs((hash + i * hash)) % palette.length)];
+		}
+
+		
+
+		function generate(string) {
+			string = hash(string);
+			for(var i = 0; i < pixels.length; i++) {
+				pixels[i] = generatePixel(string, i);
+			}
+			render();
+		}
+
+		function render() {
+			for(var p = 0; p < pixels.length; p++) {
+				var y = Math.floor(p / width);
+				var x = p - y * width;
+
+				ctx.fillStyle = pixels[p];
+				ctx.fillRect(x * res, y * res, res, res); 
+			}
+		}
+	</script>
+</body>
+</html>
